@@ -19,6 +19,7 @@ function Login({ setToken }) {
       setToken(res.data.token);
 
       alert("Login successful");
+      console.log("test");
       navigate("/courses");
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
