@@ -7,29 +7,41 @@ const router = express.Router();
 
 /**
  * @route   POST /api/auth/register
- * @desc    Register user
+ * @desc    Register user (Admin or Employee)
  */
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, skillLevel } = req.body;
 
-    if (!name || !email || !password) {
+    // Basic validation
+    if (!name || !email || !password || !role) {
       return res.status(400).json({ message: "All fields required" });
     }
 
+    // Employee-specific validation
+    if (role === "employee" && !skillLevel) {
+      return res
+        .status(400)
+        .json({ message: "Skill level required for employee" });
+    }
+
+    // Check existing user
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
+    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Create user
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
       role,
+      skillLevel: role === "employee" ? skillLevel : "",
     });
 
     res.status(201).json({
@@ -43,7 +55,7 @@ router.post("/register", async (req, res) => {
 
 /**
  * @route   POST /api/auth/login
- * @desc    Login user
+ * @desc    Login user (NO CHANGE)
  */
 router.post("/login", async (req, res) => {
   try {
@@ -72,6 +84,7 @@ router.post("/login", async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        skillLevel: user.skillLevel || "",
       },
     });
   } catch (error) {

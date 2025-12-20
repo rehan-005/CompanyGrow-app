@@ -25,10 +25,19 @@ function Navbar() {
           Projects
         </button>
 
+        {/* ✅ NEW: PROFILE BUTTON */}
+        <button
+          className="nav-btn"
+          onClick={() => navigate("/profile")}
+        >
+          Profile
+        </button>
+
         <button
           className="logout-btn"
           onClick={() => {
             localStorage.removeItem("token");
+            localStorage.removeItem("user");
             navigate("/login");
           }}
         >

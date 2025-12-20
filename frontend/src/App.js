@@ -4,6 +4,8 @@ import Login from "./pages/Login";
 import Courses from "./pages/Courses";
 import Register from "./pages/Register";
 import Projects from "./pages/Projects";
+import CreateProfile from "./pages/CreateProfile";
+import Profile from "./pages/Profile";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -17,6 +19,14 @@ function App() {
         />
         <Route path="/register" element={<Register />} />
         <Route path="/projects" element={<Projects />} />
+        <Route
+          path="/create-profile"
+          element={token ? <CreateProfile /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/profile"
+          element={token ? <Profile /> : <Navigate to="/login" />}
+        />
         <Route
           path="/courses"
           element={token ? <Courses /> : <Navigate to="/login" />}

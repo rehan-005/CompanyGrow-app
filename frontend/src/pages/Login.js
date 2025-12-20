@@ -15,11 +15,34 @@ function Login({ setToken }) {
         password,
       });
 
-      localStorage.setItem("token", res.data.token);
-      setToken(res.data.token);
+      // ✅ Extract token and user from backend response
+      const token = res.data.token;
+      const user = res.data.user;
+
+      // Store token
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      setToken(token);
 
       alert("Login successful");
-      navigate("/courses");
+
+      // ✅ Employee → check profile
+      if (user.role === "employee") {
+        const profileRes = await API.get("/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!profileRes.data) {
+          navigate("/create-profile");
+        } else {
+          navigate("/courses");
+        }
+      } else {
+        // Admin
+        navigate("/courses");
+      }
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
     }
@@ -33,12 +56,14 @@ function Login({ setToken }) {
         <input
           type="email"
           placeholder="Email"
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
           type="password"
           placeholder="Password"
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
@@ -46,7 +71,6 @@ function Login({ setToken }) {
           Login
         </button>
 
-        {/* ✅ STEP 3 — REGISTER LINK */}
         <p style={{ textAlign: "center", marginTop: "10px" }}>
           Don’t have an account?{" "}
           <span
