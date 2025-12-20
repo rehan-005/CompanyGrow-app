@@ -1,0 +1,26 @@
+# ===== BACKEND =====
+backend/node_modules/
+backend/.env
+
+# ===== FRONTEND =====
+frontend/node_modules/
+frontend/build/
+
+# ===== ROOT =====
+node_modules/
+.env
+
+# logs
+*.log
+
+# editor
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# env files
+.env
+backend/.env
+frontend/.env
