@@ -11,6 +11,7 @@ import AddCourse from "./pages/AddCourse";
 import AdminProfile from "./pages/AdminProfile";
 import MyProjects from "./pages/MyProjects";
 import EmployeeDetails from "./pages/EmployeeDetails";
+import AddProject from "./pages/AddProject";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -51,6 +52,10 @@ function App() {
         />
         <Route path="/my-projects" element={<MyProjects />} />
         <Route path="/employee/:userId" element={<EmployeeDetails />} />
+        <Route
+          path="/admin/add-project"
+          element={token ? <AddProject /> : <Navigate to="/login" />}
+        />
       </Routes>
     </BrowserRouter>
   );

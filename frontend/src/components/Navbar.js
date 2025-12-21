@@ -28,10 +28,7 @@ function Navbar() {
         {/* ADMIN */}
         {user?.role === "admin" && (
           <>
-            <button
-              className="nav-btn"
-              onClick={() => navigate("/projects")}
-            >
+            <button className="nav-btn" onClick={() => navigate("/projects")}>
               Projects
             </button>
 
@@ -40,6 +37,12 @@ function Navbar() {
               onClick={() => navigate("/admin/add-course")}
             >
               Add Course
+            </button>
+            <button
+              className="nav-btn"
+              onClick={() => navigate("/admin/add-project")}
+            >
+              Add Project
             </button>
           </>
         )}

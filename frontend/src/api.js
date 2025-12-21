@@ -76,6 +76,13 @@ export const deleteProject = (projectId, token) => {
   });
 };
 
-
+// Admin: create project
+export const createProject = (data, token) => {
+  return API.post("/projects", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
 export default API;
