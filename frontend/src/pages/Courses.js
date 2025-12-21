@@ -27,6 +27,11 @@ function Courses() {
   useEffect(() => {
     fetchCourses();
   }, [fetchCourses]);
+  
+  useEffect(() => {
+    setSkill("");
+    setLevel("");
+  }, []);
 
   const enrollCourse = async (courseId) => {
     try {

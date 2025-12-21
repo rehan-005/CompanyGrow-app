@@ -11,12 +11,6 @@ const courseSchema = new mongoose.Schema(
       required: true,
     },
 
-    // Interest tags (already used)
-    skillTags: {
-      type: [String],
-      default: [],
-    },
-
     // ✅ NEW: main skill category
     skill: {
       type: String, // Frontend, Backend, Data
@@ -27,6 +21,12 @@ const courseSchema = new mongoose.Schema(
     level: {
       type: String, // Beginner, Intermediate, Advanced
       required: true,
+    },
+
+     // Interest tags (already used)
+    skillTags: {
+      type: [String],
+      default: [],
     },
 
     createdBy: {

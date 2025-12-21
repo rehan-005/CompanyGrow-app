@@ -1,53 +1,90 @@
 import { useEffect, useState } from "react";
-import API from "../api";
 import Navbar from "../components/Navbar";
+import { getAllProjects, deleteProject } from "../api";
+import { useNavigate } from "react-router-dom";
 
 function Projects() {
   const [projects, setProjects] = useState([]);
-
-  const fetchProjects = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await API.get("/projects", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setProjects(res.data);
-    } catch (err) {
-      alert("Failed to load projects");
-    }
-  };
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchProjects();
-  }, []);
+    if (user?.role === "admin") {
+      getAllProjects(token).then((res) => setProjects(res.data));
+    }
+  }, [token, user]);
+
+  const handleDelete = async (projectId) => {
+    if (!window.confirm("Are you sure you want to delete this project?")) return;
+
+    try {
+      await deleteProject(projectId, token);
+      alert("Project deleted successfully");
+
+      // Update UI without refresh
+      setProjects((prev) =>
+        prev.filter((project) => project._id !== projectId)
+      );
+    } catch (err) {
+      alert("Failed to delete project");
+    }
+  };
 
   return (
     <>
       <Navbar />
-      <div style={{ padding: "30px" }}>
+      <div className="container">
         <h2>Projects</h2>
 
         {projects.map((project) => (
-          <div
-            key={project._id}
-            style={{
-              background: "#fff",
-              padding: "15px",
-              marginBottom: "15px",
-              borderRadius: "6px",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-            }}
-          >
+          <div key={project._id} className="course-card">
             <h3>{project.title}</h3>
+
             <p>
               <b>Required Skills:</b>{" "}
               {project.requiredSkills.join(", ")}
             </p>
+
             <p>
               <b>Status:</b> {project.status}
             </p>
+
+            {project.assignedTo && (
+              <p>
+                <b>Assigned To:</b>{" "}
+                <span
+                  style={{
+                    color: "#3498db",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                  }}
+                  onClick={() =>
+                    navigate(`/employee/${project.assignedTo._id}`)
+                  }
+                >
+                  {project.assignedTo.name}
+                </span>
+              </p>
+            )}
+
+            {/* ✅ ADMIN DELETE BUTTON */}
+            {user?.role === "admin" && (
+              <button
+                style={{
+                  backgroundColor: "#e74c3c",
+                  color: "white",
+                  border: "none",
+                  padding: "6px 12px",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                }}
+                onClick={() => handleDelete(project._id)}
+              >
+                Delete Project
+              </button>
+            )}
           </div>
         ))}
       </div>

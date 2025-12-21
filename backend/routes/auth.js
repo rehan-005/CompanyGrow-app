@@ -7,29 +7,33 @@ const router = express.Router();
 
 /**
  * @route   POST /api/auth/register
- * @desc    Register user
+ * @desc    Register user (Admin or Employee)
  */
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    if (!name || !email || !password) {
+    // Basic validation
+    if (!name || !email || !password || !role) {
       return res.status(400).json({ message: "All fields required" });
     }
 
+    // Check existing user
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
+    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Create user (NO skillLevel here)
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
-      role,
+      role, // admin or employee
     });
 
     res.status(201).json({

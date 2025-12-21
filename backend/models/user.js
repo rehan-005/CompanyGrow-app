@@ -22,10 +22,6 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "employee"],
       default: "employee",
     },
-    skills: {
-      type: [String],
-      default: [],
-    },
   },
   { timestamps: true }
 );

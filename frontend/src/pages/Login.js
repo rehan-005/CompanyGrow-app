@@ -6,6 +6,7 @@ import "./Login.css";
 function Login({ setToken }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [selectedRole, setSelectedRole] = useState("employee"); // UI only
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -13,10 +14,15 @@ function Login({ setToken }) {
       const res = await API.post("/auth/login", {
         email,
         password,
+        role: selectedRole, // optional, backend decides real role
       });
 
-      localStorage.setItem("token", res.data.token);
-      setToken(res.data.token);
+      const token = res.data.token;
+      const user = res.data.user;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      setToken(token);
 
       alert("Login successful");
       console.log("test");
@@ -34,20 +40,30 @@ function Login({ setToken }) {
         <input
           type="email"
           placeholder="Email"
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
           type="password"
           placeholder="Password"
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+
+        {/* ✅ ROLE SELECTION (UI ONLY) */}
+        <select
+          value={selectedRole}
+          onChange={(e) => setSelectedRole(e.target.value)}
+        >
+          <option value="employee">Employee</option>
+          <option value="admin">Admin</option>
+        </select>
 
         <button className="login-btn" onClick={handleLogin}>
           Login
         </button>
 
-        {/* ✅ STEP 3 — REGISTER LINK */}
         <p style={{ textAlign: "center", marginTop: "10px" }}>
           Don’t have an account?{" "}
           <span
