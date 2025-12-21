@@ -1,19 +1,35 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import { getAllProjects } from "../api";
+import { getAllProjects, deleteProject } from "../api";
 import { useNavigate } from "react-router-dom";
 
 function Projects() {
   const [projects, setProjects] = useState([]);
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
-  const navigate = useNavigate(); // ✅ ADD THIS
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user?.role === "admin") {
       getAllProjects(token).then((res) => setProjects(res.data));
     }
   }, [token, user]);
+
+  const handleDelete = async (projectId) => {
+    if (!window.confirm("Are you sure you want to delete this project?")) return;
+
+    try {
+      await deleteProject(projectId, token);
+      alert("Project deleted successfully");
+
+      // Update UI without refresh
+      setProjects((prev) =>
+        prev.filter((project) => project._id !== projectId)
+      );
+    } catch (err) {
+      alert("Failed to delete project");
+    }
+  };
 
   return (
     <>
@@ -50,6 +66,24 @@ function Projects() {
                   {project.assignedTo.name}
                 </span>
               </p>
+            )}
+
+            {/* ✅ ADMIN DELETE BUTTON */}
+            {user?.role === "admin" && (
+              <button
+                style={{
+                  backgroundColor: "#e74c3c",
+                  color: "white",
+                  border: "none",
+                  padding: "6px 12px",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                }}
+                onClick={() => handleDelete(project._id)}
+              >
+                Delete Project
+              </button>
             )}
           </div>
         ))}

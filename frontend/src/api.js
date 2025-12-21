@@ -67,5 +67,15 @@ export const getEmployeeProfile = (userId, token) => {
   });
 };
 
+// Admin: delete project
+export const deleteProject = (projectId, token) => {
+  return API.delete(`/projects/${projectId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+
 
 export default API;

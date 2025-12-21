@@ -81,4 +81,26 @@ router.get("/my", protect, async (req, res) => {
   res.json(projects);
 });
 
+/**
+ * @route   DELETE /api/projects/:id
+ * @desc    Delete a project (Admin only)
+ */
+router.delete("/:id", protect, adminOnly, async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    await project.deleteOne();
+
+    res.json({ message: "Project deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 module.exports = router;
