@@ -6,6 +6,9 @@ import Register from "./pages/Register";
 import Projects from "./pages/Projects";
 import CreateProfile from "./pages/CreateProfile";
 import Profile from "./pages/Profile";
+import AdminDashboard from "./pages/AdminDashboard";
+import AddCourse from "./pages/AddCourse";
+import AdminProfile from "./pages/AdminProfile";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -13,10 +16,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/login"
-          element={<Login setToken={setToken} />}
-        />
+        <Route path="/login" element={<Login setToken={setToken} />} />
         <Route path="/register" element={<Register />} />
         <Route path="/projects" element={<Projects />} />
         <Route
@@ -26,6 +26,18 @@ function App() {
         <Route
           path="/profile"
           element={token ? <Profile /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/admin"
+          element={token ? <AdminDashboard /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/admin/add-course"
+          element={token ? <AddCourse /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/admin/profile"
+          element={token ? <AdminProfile /> : <Navigate to="/login" />}
         />
         <Route
           path="/courses"

@@ -6,6 +6,7 @@ import "./Login.css";
 function Login({ setToken }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [selectedRole, setSelectedRole] = useState("employee"); // UI only
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -13,20 +14,19 @@ function Login({ setToken }) {
       const res = await API.post("/auth/login", {
         email,
         password,
+        role: selectedRole, // optional, backend decides real role
       });
 
-      // ✅ Extract token and user from backend response
       const token = res.data.token;
       const user = res.data.user;
 
-      // Store token
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       setToken(token);
 
       alert("Login successful");
 
-      // ✅ Employee → check profile
+      // ✅ REAL ROLE CHECK (from backend)
       if (user.role === "employee") {
         const profileRes = await API.get("/profile", {
           headers: {
@@ -41,7 +41,7 @@ function Login({ setToken }) {
         }
       } else {
         // Admin
-        navigate("/courses");
+        navigate("/admin");
       }
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
@@ -66,6 +66,15 @@ function Login({ setToken }) {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+
+        {/* ✅ ROLE SELECTION (UI ONLY) */}
+        <select
+          value={selectedRole}
+          onChange={(e) => setSelectedRole(e.target.value)}
+        >
+          <option value="employee">Employee</option>
+          <option value="admin">Admin</option>
+        </select>
 
         <button className="login-btn" onClick={handleLogin}>
           Login
