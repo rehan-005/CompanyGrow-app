@@ -14,9 +14,14 @@ const employeeProfileSchema = new mongoose.Schema(
       default: [],
     },
 
+    skillLevel: {
+      type: String,
+      enum: ["Beginner", "Intermediate", "Advanced"],
+      required: true,
+    },
+
     experience: {
-      type: String, // "Fresher", "1-2 years", etc.
-      default: "",
+      type: String,
     },
   },
   { timestamps: true }

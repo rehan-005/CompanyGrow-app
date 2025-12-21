@@ -20,22 +20,19 @@ function Navbar() {
       </h2>
 
       <div>
+        {/* COMMON */}
         <button className="nav-btn" onClick={() => navigate("/courses")}>
           Courses
         </button>
 
-        <button className="nav-btn" onClick={() => navigate("/projects")}>
-          Projects
-        </button>
-
-        {/* ✅ ADMIN-ONLY OPTIONS */}
+        {/* ADMIN */}
         {user?.role === "admin" && (
           <>
             <button
               className="nav-btn"
-              onClick={() => navigate("/admin")}
+              onClick={() => navigate("/projects")}
             >
-              Admin Dashboard
+              Projects
             </button>
 
             <button
@@ -47,11 +44,24 @@ function Navbar() {
           </>
         )}
 
+        {/* EMPLOYEE */}
+        {user?.role === "employee" && (
+          <>
+            <button
+              className="nav-btn"
+              onClick={() => navigate("/my-projects")}
+            >
+              My Projects
+            </button>
+          </>
+        )}
+
         {/* PROFILE */}
         <button className="nav-btn" onClick={handleProfileClick}>
           Profile
         </button>
 
+        {/* LOGOUT */}
         <button
           className="logout-btn"
           onClick={() => {

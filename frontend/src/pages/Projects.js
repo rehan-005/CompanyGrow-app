@@ -1,53 +1,56 @@
 import { useEffect, useState } from "react";
-import API from "../api";
 import Navbar from "../components/Navbar";
+import { getAllProjects } from "../api";
+import { useNavigate } from "react-router-dom";
 
 function Projects() {
   const [projects, setProjects] = useState([]);
-
-  const fetchProjects = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await API.get("/projects", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setProjects(res.data);
-    } catch (err) {
-      alert("Failed to load projects");
-    }
-  };
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate(); // ✅ ADD THIS
 
   useEffect(() => {
-    fetchProjects();
-  }, []);
+    if (user?.role === "admin") {
+      getAllProjects(token).then((res) => setProjects(res.data));
+    }
+  }, [token, user]);
 
   return (
     <>
       <Navbar />
-      <div style={{ padding: "30px" }}>
+      <div className="container">
         <h2>Projects</h2>
 
         {projects.map((project) => (
-          <div
-            key={project._id}
-            style={{
-              background: "#fff",
-              padding: "15px",
-              marginBottom: "15px",
-              borderRadius: "6px",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-            }}
-          >
+          <div key={project._id} className="course-card">
             <h3>{project.title}</h3>
+
             <p>
               <b>Required Skills:</b>{" "}
               {project.requiredSkills.join(", ")}
             </p>
+
             <p>
               <b>Status:</b> {project.status}
             </p>
+
+            {project.assignedTo && (
+              <p>
+                <b>Assigned To:</b>{" "}
+                <span
+                  style={{
+                    color: "#3498db",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                  }}
+                  onClick={() =>
+                    navigate(`/employee/${project.assignedTo._id}`)
+                  }
+                >
+                  {project.assignedTo.name}
+                </span>
+              </p>
+            )}
           </div>
         ))}
       </div>
