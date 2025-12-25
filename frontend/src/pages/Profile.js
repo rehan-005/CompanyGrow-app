@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
 import Navbar from "../components/Navbar";
+import "./Profile.css";
 
 function Profile() {
   const [profile, setProfile] = useState(null);
@@ -52,17 +53,86 @@ function Profile() {
   return (
     <>
       <Navbar />
-      <div className="container">
-        <h2>My Profile</h2>
+      <div className="profile-page">
+        <div className="container">
+          <div className="profile-card">
+            <div className="profile-card-header">
+              <div>
+                <h2 className="profile-title">My Profile</h2>
+                <p className="profile-subtitle">View and manage your professional details</p>
+              </div>
 
-        <p><b>Name:</b> {user.name}</p>
-        <p><b>Email:</b> {user.email}</p>
-        <p><b>Skill Level:</b> {user.skillLevel}</p>
+              <button
+                type="button"
+                className="profile-edit-btn"
+                onClick={() => navigate("/edit-profile")}
+              >
+                Edit Profile
+              </button>
+            </div>
 
-        <hr />
+            <div className="profile-section">
+              <h3 className="profile-section-title">Account</h3>
 
-        <p><b>Skills:</b> {profile.skills.join(", ")}</p>
-        <p><b>Experience:</b> {profile.experience}</p>
+              <div className="profile-grid">
+                <div className="profile-field">
+                  <span className="profile-label">Name</span>
+                  <span className="profile-value">{user.name}</span>
+                </div>
+
+                <div className="profile-field">
+                  <span className="profile-label">Email</span>
+                  <span className="profile-value">{user.email}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="profile-divider" />
+
+            <div className="profile-section">
+              <h3 className="profile-section-title">Skills</h3>
+
+              <div className="profile-grid">
+                <div className="profile-field">
+                  <span className="profile-label">Skill Level</span>
+                  <span className="profile-value">
+                    <span className={`profile-skill-level profile-skill-level--${(profile.skillLevel || "").toLowerCase()}`}>
+                      {profile.skillLevel || "-"}
+                    </span>
+                  </span>
+                </div>
+
+                <div className="profile-field">
+                  <span className="profile-label">Skills</span>
+                  <span className="profile-value">
+                    <span className="profile-skill-badges">
+                      {(profile.skills || []).length > 0 ? (
+                        profile.skills.map((s) => (
+                          <span key={s} className="profile-skill-badge">
+                            {s}
+                          </span>
+                        ))
+                      ) : (
+                        "-"
+                      )}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="profile-divider" />
+
+            <div className="profile-section">
+              <h3 className="profile-section-title">Experience</h3>
+              <div className="profile-experience">
+                {profile.experience && profile.experience.trim().length > 0
+                  ? profile.experience
+                  : "-"}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

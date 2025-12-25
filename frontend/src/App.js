@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Projects from "./pages/Projects";
 import CreateProfile from "./pages/CreateProfile";
 import Profile from "./pages/Profile";
+import EditProfile from "./pages/EditProfile";
 import AdminDashboard from "./pages/AdminDashboard";
 import AddCourse from "./pages/AddCourse";
 import AdminProfile from "./pages/AdminProfile";
@@ -29,6 +30,10 @@ function App() {
         <Route
           path="/profile"
           element={token ? <Profile /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/edit-profile"
+          element={token ? <EditProfile /> : <Navigate to="/login" />}
         />
         <Route
           path="/admin"
