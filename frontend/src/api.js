@@ -38,6 +38,14 @@ export const cancelEnroll = (courseId, token) => {
   });
 };
 
+export const deleteCourse = (courseId, token) => {
+  return API.delete(`/courses/${courseId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 // ================= PROJECTS =================
 
 // Admin: get all projects

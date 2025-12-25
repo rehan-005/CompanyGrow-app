@@ -28,6 +28,51 @@
   cursor: not-allowed;
 }
 
+.course-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.admin-course-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px 0 16px;
+}
+
+.admin-add-course-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.admin-add-course-btn:hover {
+  background-color: #2980b9;
+}
+
+.delete-course-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.delete-course-btn:hover {
+  background-color: #c0392b;
+}
+
+.delete-course-btn:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
 /* FILTER BAR */
 .filter-bar {
   display: flex;

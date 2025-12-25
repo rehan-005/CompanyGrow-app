@@ -16,6 +16,8 @@ import AddProject from "./pages/AddProject";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const isAdmin = user?.role === "admin";
 
   return (
     <BrowserRouter>
@@ -37,15 +39,19 @@ function App() {
         />
         <Route
           path="/admin"
-          element={token ? <AdminDashboard /> : <Navigate to="/login" />}
+          element={token && isAdmin ? <AdminDashboard /> : <Navigate to={token ? "/courses" : "/login"} />}
+        />
+        <Route
+          path="/admin/courses"
+          element={token && isAdmin ? <Courses /> : <Navigate to={token ? "/courses" : "/login"} />}
         />
         <Route
           path="/admin/add-course"
-          element={token ? <AddCourse /> : <Navigate to="/login" />}
+          element={token && isAdmin ? <AddCourse /> : <Navigate to={token ? "/courses" : "/login"} />}
         />
         <Route
           path="/admin/profile"
-          element={token ? <AdminProfile /> : <Navigate to="/login" />}
+          element={token && isAdmin ? <AdminProfile /> : <Navigate to={token ? "/courses" : "/login"} />}
         />
         <Route
           path="/courses"

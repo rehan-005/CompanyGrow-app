@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { getCourses, enrollInCourse, cancelEnroll } from "../api";
+import { getCourses, enrollInCourse, cancelEnroll, deleteCourse } from "../api";
 import "./Courses.css";
 import "../App.css";
 
@@ -9,8 +10,12 @@ function Courses() {
   const [courses, setCourses] = useState([]);
   const [skill, setSkill] = useState("");
   const [level, setLevel] = useState("");
+  const [deletingId, setDeletingId] = useState(null);
 
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+  const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+  const isAdmin = storedUser?.role === "admin";
   const userId = token ? jwtDecode(token).id : null;
 
   // ✅ FIX: wrap in useCallback
@@ -53,12 +58,40 @@ function Courses() {
     }
   };
 
+  const handleDeleteCourse = async (courseId) => {
+    if (!isAdmin) return;
+    const ok = window.confirm("Delete this course?");
+    if (!ok) return;
+
+    try {
+      setDeletingId(courseId);
+      await deleteCourse(courseId, token);
+      setCourses((prev) => prev.filter((c) => c._id !== courseId));
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to delete course");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   return (
     <>
       <Navbar />
 
       <div className="container">
         <h2>Available Courses</h2>
+
+        {isAdmin && (
+          <div className="admin-course-toolbar">
+            <button
+              type="button"
+              className="admin-add-course-btn"
+              onClick={() => navigate("/admin/add-course")}
+            >
+              Add Course
+            </button>
+          </div>
+        )}
 
         {/* FILTER BAR */}
         <div className="filter-bar">
@@ -97,22 +130,33 @@ function Courses() {
                 <b>Tags:</b> {course.skillTags.join(", ")}
               </p>
 
-              {alreadyEnrolled ? (
-                <button
-                  className="enroll-btn"
-                  style={{ backgroundColor: "#e74c3c" }}
-                  onClick={() => cancelEnrollment(course._id)}
-                >
-                  Cancel Enrollment
-                </button>
-              ) : (
-                <button
-                  className="enroll-btn"
-                  onClick={() => enrollCourse(course._id)}
-                >
-                  Enroll
-                </button>
-              )}
+              <div className="course-actions">
+                {isAdmin ? (
+                  <button
+                    type="button"
+                    className="delete-course-btn"
+                    onClick={() => handleDeleteCourse(course._id)}
+                    disabled={deletingId === course._id}
+                  >
+                    {deletingId === course._id ? "Deleting..." : "Delete"}
+                  </button>
+                ) : alreadyEnrolled ? (
+                  <button
+                    className="enroll-btn"
+                    style={{ backgroundColor: "#e74c3c" }}
+                    onClick={() => cancelEnrollment(course._id)}
+                  >
+                    Cancel Enrollment
+                  </button>
+                ) : (
+                  <button
+                    className="enroll-btn"
+                    onClick={() => enrollCourse(course._id)}
+                  >
+                    Enroll
+                  </button>
+                )}
+              </div>
             </div>
           );
         })}
