@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const EmployeeProfile = require("../models/employeeProfile");
 
 const router = express.Router();
 
@@ -11,11 +12,16 @@ const router = express.Router();
  */
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, skillLevel } = req.body;
 
     // Basic validation
     if (!name || !email || !password || !role) {
       return res.status(400).json({ message: "All fields required" });
+    }
+
+    // Validate skillLevel for employees
+    if (role === "employee" && !skillLevel) {
+      return res.status(400).json({ message: "Skill level required for employees" });
     }
 
     // Check existing user
@@ -28,13 +34,23 @@ router.post("/register", async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create user (NO skillLevel here)
+    // Create user
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
       role, // admin or employee
     });
+
+    // Create employee profile if user is an employee
+    if (role === "employee") {
+      await EmployeeProfile.create({
+        userId: user._id,
+        skillLevel,
+        skills: [],
+        experience: "",
+      });
+    }
 
     res.status(201).json({
       message: "User registered successfully",
