@@ -9,8 +9,16 @@ const router = express.Router();
  * @route GET /api/profile
  */
 router.get("/", protect, async (req, res) => {
-  const profile = await EmployeeProfile.findOne({ userId: req.user.id });
-  res.json(profile);
+  try {
+    const profile = await EmployeeProfile.findOne({ userId: req.user.id });
+    if (!profile) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
+    res.json(profile);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 /**
