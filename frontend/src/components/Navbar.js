@@ -31,19 +31,6 @@ function Navbar() {
             <button className="nav-btn" onClick={() => navigate("/projects")}>
               Projects
             </button>
-
-            <button
-              className="nav-btn"
-              onClick={() => navigate("/admin/add-course")}
-            >
-              Add Course
-            </button>
-            <button
-              className="nav-btn"
-              onClick={() => navigate("/admin/add-project")}
-            >
-              Add Project
-            </button>
           </>
         )}
 

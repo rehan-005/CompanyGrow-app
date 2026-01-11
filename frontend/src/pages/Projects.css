@@ -1,0 +1,106 @@
+.projects-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px 0 16px;
+}
+
+.projects-create-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.projects-create-title {
+  margin-bottom: 12px;
+  color: #2c3e50;
+}
+
+.projects-error {
+  background-color: #fde8e8;
+  color: #c53030;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.projects-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.projects-group {
+  margin-bottom: 1rem;
+}
+
+.projects-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.projects-group input,
+.projects-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.projects-group input:focus,
+.projects-group textarea:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.projects-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.projects-create-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.projects-create-btn:hover {
+  background-color: #2980b9;
+}
+
+.projects-create-btn:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+.projects-delete-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-weight: 700;
+}
+
+.projects-delete-btn:hover {
+  background-color: #c0392b;
+}
+
+@media (max-width: 640px) {
+  .projects-form-grid {
+    grid-template-columns: 1fr;
+  }
+}

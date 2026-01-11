@@ -2,27 +2,53 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
 import Navbar from "../components/Navbar";
+import "./AddCourse.css";
 
 function AddCourse() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [skill, setSkill] = useState("Frontend");      // ✅
-  const [level, setLevel] = useState("Beginner");      // ✅
-  const [skillTags, setSkillTags] = useState("");
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    skill: "Frontend",
+    level: "Beginner",
+    skillTags: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
-  const handleAdd = async () => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleAdd = async (e) => {
+    e.preventDefault();
+
+    if (!formData.title.trim() || !formData.description.trim()) {
+      setError("Title and description are required");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
     try {
       await API.post(
         "/courses",
         {
-          title,
-          description,
-          skill,
-          level,
-          skillTags: skillTags.split(",").map(t => t.trim()),
+          title: formData.title,
+          description: formData.description,
+          skill: formData.skill,
+          level: formData.level,
+          skillTags: formData.skillTags
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean),
         },
         {
           headers: {
@@ -32,54 +58,109 @@ function AddCourse() {
       );
 
       alert("Course added successfully");
-      navigate("/courses"); // ✅ redirect after add
+      navigate("/courses");
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to add course");
+      setError(err.response?.data?.message || "Failed to add course");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
       <Navbar />
-      <div className="container">
-        <h2>Add Course</h2>
+      <div className="add-course-container">
+        <div className="add-course-form">
+          <h2>Add Course</h2>
 
-        {/* TITLE */}
-        <input
-          placeholder="Course Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+          {error && <div className="add-course-error">{error}</div>}
 
-        {/* DESCRIPTION */}
-        <textarea
-          placeholder="Course Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+          <form onSubmit={handleAdd}>
+            <div className="add-course-group">
+              <label htmlFor="title">Course Title</label>
+              <input
+                id="title"
+                name="title"
+                type="text"
+                value={formData.title}
+                onChange={handleChange}
+                placeholder="Course Title"
+                required
+              />
+            </div>
 
-        {/* ✅ SKILL SELECT */}
-        <select value={skill} onChange={(e) => setSkill(e.target.value)}>
-          <option value="Frontend">Frontend</option>
-          <option value="Backend">Backend</option>
-          <option value="Data">Data</option>
-        </select>
+            <div className="add-course-group">
+              <label htmlFor="description">Course Description</label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Course Description"
+                rows="4"
+                required
+              />
+            </div>
 
-        {/* ✅ LEVEL SELECT */}
-        <select value={level} onChange={(e) => setLevel(e.target.value)}>
-          <option value="Beginner">Beginner</option>
-          <option value="Intermediate">Intermediate</option>
-          <option value="Advanced">Advanced</option>
-        </select>
+            <div className="add-course-grid">
+              <div className="add-course-group">
+                <label htmlFor="skill">Skill</label>
+                <select
+                  id="skill"
+                  name="skill"
+                  value={formData.skill}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="Frontend">Frontend</option>
+                  <option value="Backend">Backend</option>
+                  <option value="Data">Data</option>
+                </select>
+              </div>
 
-        {/* TAGS */}
-        <input
-          placeholder="Tags (comma separated)"
-          value={skillTags}
-          onChange={(e) => setSkillTags(e.target.value)}
-        />
+              <div className="add-course-group">
+                <label htmlFor="level">Level</label>
+                <select
+                  id="level"
+                  name="level"
+                  value={formData.level}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="Beginner">Beginner</option>
+                  <option value="Intermediate">Intermediate</option>
+                  <option value="Advanced">Advanced</option>
+                </select>
+              </div>
+            </div>
 
-        <button onClick={handleAdd}>Add Course</button>
+            <div className="add-course-group">
+              <label htmlFor="skillTags">Tags (comma separated)</label>
+              <input
+                id="skillTags"
+                name="skillTags"
+                type="text"
+                value={formData.skillTags}
+                onChange={handleChange}
+                placeholder="e.g. React, Node, MongoDB"
+              />
+            </div>
+
+            <div className="add-course-actions">
+              <button
+                type="button"
+                className="add-course-cancel"
+                onClick={() => navigate("/courses")}
+                disabled={loading}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="add-course-submit" disabled={loading}>
+                {loading ? "Saving..." : "Add Course"}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );
