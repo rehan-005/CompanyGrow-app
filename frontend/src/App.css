@@ -37,10 +37,26 @@
   }
 }
 
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  background: #f8fafc;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.main-content.with-sidebar {
+  margin-left: 280px;
+}
+
 .container {
   max-width: 900px;
   margin: 40px auto;
-  padding: 20px;
+  padding: 20px 20px 80px 20px;
 }
 
 .header {
@@ -61,5 +77,16 @@
 
 .logout-btn:hover {
   background-color: #c0392b;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-content.with-sidebar {
+    margin-left: 0;
+  }
+  
+  .app-layout {
+    flex-direction: column;
+  }
 }
 
